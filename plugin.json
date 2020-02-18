@@ -1,6 +1,6 @@
 {
-    "id": "com.mattermost.plugin-starter-template",
-    "name": "Plugin Starter Template",
+    "id": "com.mattermost.mammut-mattermos-plugin",
+    "name": "mammut-mattermos-plugin",
     "description": "This plugin serves as a starting point for writing a Mattermost plugin.",
     "version": "0.1.0",
     "min_server_version": "5.12.0",
@@ -11,12 +11,30 @@
             "windows-amd64": "server/dist/plugin-windows-amd64.exe"
         }
     },
-    "webapp": {
-        "bundle_path": "webapp/dist/main.js"
-    },
     "settings_schema": {
-        "header": "",
-        "footer": "",
-        "settings": []
+        "header": "Header: Configure your demo plugin settings below",
+        "footer": "Footer: The code for this demo plugin can be found [here](https://github.com/mattermost/mattermost-plugin-demo)",
+        "settings": [{
+            "key": "ChannelName",
+            "display_name": "Channel Name",
+            "type": "text",
+            "help_text": "The channel to use as part of the demo plugin, created for each team automatically if it does not exist.",
+            "placeholder": "demo_plugin",
+            "default": "demo_plugin"
+        }, {
+            "key": "Username",
+            "display_name": "Username",
+            "type": "text",
+            "help_text": "The user to use as part of the demo plugin, created automatically if it does not exist.",
+            "placeholder": "demo_plugin",
+            "default": "demo_plugin"
+        }, {
+            "key": "secretNumber",
+            "display_name": "Secret Number",
+            "type": "number",
+            "help_text": "A secret number that the demo plugin will watch for. If the secret number is mentioned in any channel then the demo plugin will publish a special message.",
+            "placeholder": "Some secret number",
+            "default": 123
+        }]
     }
 }
