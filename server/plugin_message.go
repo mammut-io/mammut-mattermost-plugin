@@ -6,20 +6,16 @@ import (
 	"github.com/mattermost/mattermost-server/v5/model"
 )
 
-func (p *Plugin) postPluginMessage(id, msg string) *model.AppError {
+func (p *Plugin) postMammutPluginMessage(id, msg string) *model.AppError {
 	configuration := p.getConfiguration()
-	p.API.LogDebug(
+	p.API.LogInfo(
 		"##################################",
 	)
-	p.API.LogDebug(
-		"configuration.demoChannelIDs[id]",
-		"configuration chanel id", configuration.demoChannelIDs[id],
-	)
-	p.API.LogDebug(
+	p.API.LogInfo(
 		"id",
 		"id", id,
 	)
-	p.API.LogDebug(
+	p.API.LogInfo(
 		"##################################",
 	)
 
@@ -34,7 +30,7 @@ func (p *Plugin) postPluginMessage(id, msg string) *model.AppError {
 
 	_, err := p.API.CreatePost(&model.Post{
 		UserId:    p.botID,
-		ChannelId: configuration.demoChannelIDs[id],
+		ChannelId: id,
 		Message:   msg,
 	})
 

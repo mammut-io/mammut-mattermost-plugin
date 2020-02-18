@@ -42,8 +42,8 @@ const manifestStr = `
         "display_name": "Username",
         "type": "text",
         "help_text": "The user to use as part of the demo plugin, created automatically if it does not exist.",
-        "placeholder": "demo_plugin",
-        "default": "demo_plugin"
+        "placeholder": "mammut_bot",
+        "default": "mammut_bot"
       },
       {
         "key": "secretNumber",

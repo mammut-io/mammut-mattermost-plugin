@@ -52,6 +52,7 @@ type configuration struct {
 	// demoUserID is the id of the user specified above.
 	demoUserID string
 
+	//TODO:remover chanel ya que no se usa
 	// demoChannelIDs maps team ids to the channels created for each using the channel name above.
 	demoChannelIDs map[string]string
 }
@@ -212,9 +213,9 @@ func (p *Plugin) OnConfigurationChange() error {
 	}
 
 	botID, ensureBotError := p.Helpers.EnsureBot(&model.Bot{
-		Username:    "demoplugin",
-		DisplayName: "Demo Plugin Bot",
-		Description: "A bot account created by the demo plugin.",
+		Username:    "mammutplugin",
+		DisplayName: "Mammut Plugin Bot",
+		Description: "A bot account created by the mammut demo plugin.",
 	}, plugin.IconImagePath("/assets/github.svg"))
 	if ensureBotError != nil {
 		return errors.Wrap(ensureBotError, "failed to ensure demo bot.")

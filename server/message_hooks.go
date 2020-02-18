@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -32,7 +30,7 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 		p.API.LogError("failed to query user", "user_id", post.UserId)
 		return
 	}
-
+	//TODO tengo que hacer esto o con el post.ChannelId basta?
 	channel, err := p.API.GetChannel(post.ChannelId)
 	if err != nil {
 		p.API.LogError("failed to query channel", "channel_id", post.ChannelId)
@@ -40,42 +38,27 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 	}
 
 	msg := fmt.Sprintf("MessageHasBeenPosted: @%s, ~%s", user.Username, channel.Name)
-	p.API.LogDebug(
-		"chanel id before post",
-		"chanelid", channel.TeamId,
-	)
-	if err := p.postPluginMessage(channel.TeamId, msg); err != nil {
+	directChannel, err := p.API.GetDirectChannel(post.UserId, p.botID)
+	if err != nil {
 		p.API.LogError(
-			"failed to post MessageHasBeenPosted message",
-			"channel_id", channel.Id,
-			"user_id", user.Id,
+			"Failed to get channel for client and bot",
+			"post_userId", post.UserId,
+			"bot_demo_user", p.botID,
 			"error", err.Error(),
 		)
+		return
 	}
-
-	// Check if the Random Secret was posted
-	if strings.Contains(post.Message, configuration.RandomSecret) {
-		msg = fmt.Sprintf("The random secret %q has been entered by @%s!\n%s",
-			configuration.RandomSecret, user.Username, configuration.SecretMessage,
-		)
-		if err := p.postPluginMessage(channel.TeamId, msg); err != nil {
+	p.API.LogInfo(
+		"chanels before comparison",
+		"channel_id", channel.Id,
+		"direct_channel_id", directChannel.Id,
+	)
+	if directChannel.Id == channel.Id {
+		if err := p.postMammutPluginMessage(channel.Id, msg); err != nil {
 			p.API.LogError(
-				"failed to post random secret message",
+				"failed to post MessageHasBeenPosted message",
 				"channel_id", channel.Id,
-				"user_id", user.Id,
-				"error", err.Error(),
-			)
-		}
-	}
-
-	if strings.Contains(post.Message, strconv.Itoa(configuration.SecretNumber)) {
-		msg = fmt.Sprintf("The random number %d has been entered by @%s!",
-			configuration.SecretNumber, user.Username)
-		if err := p.postPluginMessage(channel.TeamId, msg); err != nil {
-			p.API.LogError(
-				"failed to post random secret message",
-				"channel_id", channel.Id,
-				"user_id", user.Id,
+				"direct_channel_id", directChannel.Id,
 				"error", err.Error(),
 			)
 		}
