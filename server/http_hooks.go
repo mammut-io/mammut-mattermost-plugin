@@ -1,0 +1,77 @@
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/mattermost/mattermost-server/v5/plugin"
+)
+
+// ServeHTTP demonstrates a plugin that handles HTTP requests by greeting the world.
+func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	switch path := r.URL.Path; path {
+	case "/mammuthook":
+		p.httpMeetingSettings(w, r)
+	case "/":
+		p.serveHTTPOriginal(w, r)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func (p *Plugin) serveHTTPOriginal(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Hello, world!")
+}
+
+func (p *Plugin) httpMeetingSettings(w http.ResponseWriter, r *http.Request) {
+
+	mattermostUserID := r.Header.Get("Mattermost-User-Id")
+	if mattermostUserID == "" {
+		http.Error(w, "Not Authorized", http.StatusUnauthorized)
+	}
+
+	switch r.Method {
+	case http.MethodPost:
+		p.httpMeetingSaveSettings(w, r, mattermostUserID)
+	default:
+		http.Error(w, "Request: "+r.Method+" is not allowed.", http.StatusMethodNotAllowed)
+	}
+}
+
+func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request, mmUserID string) {
+
+	//msg = fmt.Sprintf("%s%s%s", configuration.TextStyle, msg, configuration.TextStyle)
+
+	//_, err := p.API.CreatePost(&model.Post{
+	//	UserId:    p.botID,
+	//	ChannelId: id,
+	//	Message:   msg,
+	//})
+	//userID := r.Header.Get("Mattermost-User-ID")
+	//if userID == "" {
+	//	http.Error(w, "Not authorized", http.StatusUnauthorized)
+	//	return
+	//}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	p.API.LogInfo(
+		"##################################",
+	)
+	p.API.LogInfo(
+		"body",
+		"body", body,
+	)
+	p.API.LogInfo(
+		"##################################",
+	)
+
+	w.Write([]byte("{\"status\": \"OK\"}"))
+}

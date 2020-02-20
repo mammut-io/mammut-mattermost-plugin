@@ -55,6 +55,9 @@ type configuration struct {
 	//TODO:remover chanel ya que no se usa
 	// demoChannelIDs maps team ids to the channels created for each using the channel name above.
 	demoChannelIDs map[string]string
+
+	// MammutAPIURL is the url of mammut to talk with.
+	MammutAPIURL string
 }
 
 // Clone deep copies the configuration. Your implementation may only require a shallow copy if

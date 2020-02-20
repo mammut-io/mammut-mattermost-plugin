@@ -6,6 +6,17 @@ import (
 	"github.com/mattermost/mattermost-server/v5/model"
 )
 
+func (p *Plugin) postMammutPluginMessageToAPI(id, msg string) *model.AppError {
+	configuration := p.getConfiguration()
+
+	if configuration.disabled {
+		return nil
+	}
+
+	_, err := p.doActionRequest(configuration.MammutAPIURL)
+
+	return err
+}
 func (p *Plugin) postMammutPluginMessage(id, msg string) *model.AppError {
 	configuration := p.getConfiguration()
 	p.API.LogInfo(
