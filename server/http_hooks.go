@@ -74,6 +74,6 @@ func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	//w.Write([]byte("{\"status\": \"OK\"}"))
-	fmt.Fprint(w, "Hello, world!")
+	w.WriteHeader(200)
+	//fmt.Fprint(w, "Hello, world!")
 }

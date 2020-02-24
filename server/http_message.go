@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path"
+	"strings"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 )
@@ -23,11 +25,18 @@ func (p *Plugin) doActionRequest(rawURL string) (*http.Response, *model.AppError
 	p.API.LogInfo(
 		"##################################",
 	)
+	testbody := &MammutResponse{
+		UserID:   p.botID,
+		ChanelID: "cg1k3z5ow7y93rh6st13uy3fuw",
+		Message:  "Pereira",
+	}
 
-	req, err := http.NewRequest("GET", rawURL, nil)
+	jsonTest, err := json.Marshal(testbody)
+	req, err := http.NewRequest("POST", "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook", strings.NewReader(string(jsonTest)))
 	if err != nil {
 		return nil, model.NewAppError("DoActionRequest", "api.post.do_action.action_integration.app_error", nil, err.Error(), http.StatusBadRequest)
 	}
+	req.Header.Add("Mattermost-User-Id", "theuserid")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
