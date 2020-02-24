@@ -24,7 +24,8 @@ func (p *Plugin) postMammutPluginMessage(id, msg string) *model.AppError {
 	)
 	p.API.LogInfo(
 		"id",
-		"id", id,
+		"chanelid", id,
+		"botid", p.botID,
 	)
 	p.API.LogInfo(
 		"##################################",

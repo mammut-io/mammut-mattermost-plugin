@@ -30,6 +30,14 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 		p.API.LogError("failed to query user", "user_id", post.UserId)
 		return
 	}
+	userbot, err := p.API.GetUser(p.botID)
+	p.API.LogInfo(
+		"##################################",
+	)
+	p.API.LogInfo(
+		"bot",
+		"userbot", userbot,
+	)
 	//TODO tengo que hacer esto o con el post.ChannelId basta?
 	channel, err := p.API.GetChannel(post.ChannelId)
 	if err != nil {

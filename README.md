@@ -1,3 +1,7 @@
+# Test mammut post
+`curl -H "Mattermost-User-Id: h5grwu8d9b8y3mam1djdtas16h" -H "Accept: application/json" -H "Content-Type: application/json" --data '{ "UserID":"h5grwu8d9b8y3mam1djdtas16h", "ChanelID": "cg1k3z5ow7y93rh6st13uy3fuw", "Message": "holavale"}' -X POST http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook`
+
+
 # Plugin Starter Template [![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-starter-template/master.svg)](https://circleci.com/gh/mattermost/mattermost-plugin-starter-template)
 
 This plugin serves as a starting point for writing a Mattermost plugin. Feel free to base your own plugin off this repository.

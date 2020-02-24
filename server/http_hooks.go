@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
@@ -40,17 +42,11 @@ func (p *Plugin) httpMeetingSettings(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Request: "+r.Method+" is not allowed.", http.StatusMethodNotAllowed)
 	}
+	//fmt.Fprint(w, "Hello, world!")
 }
 
 func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request, mmUserID string) {
 
-	//msg = fmt.Sprintf("%s%s%s", configuration.TextStyle, msg, configuration.TextStyle)
-
-	//_, err := p.API.CreatePost(&model.Post{
-	//	UserId:    p.botID,
-	//	ChannelId: id,
-	//	Message:   msg,
-	//})
 	//userID := r.Header.Get("Mattermost-User-ID")
 	//if userID == "" {
 	//	http.Error(w, "Not authorized", http.StatusUnauthorized)
@@ -62,16 +58,22 @@ func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request,
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	p.API.LogInfo(
-		"##################################",
-	)
-	p.API.LogInfo(
-		"body",
-		"body", body,
-	)
-	p.API.LogInfo(
-		"##################################",
-	)
+	var mammutresponse *MammutResponse
+	if err = json.Unmarshal(body, &mammutresponse); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	w.Write([]byte("{\"status\": \"OK\"}"))
+	_, posterr := p.API.CreatePost(&model.Post{
+		UserId:    mammutresponse.UserID,
+		ChannelId: mammutresponse.ChanelID,
+		Message:   mammutresponse.Message,
+	})
+	if posterr != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//w.Write([]byte("{\"status\": \"OK\"}"))
+	fmt.Fprint(w, "Hello, world!")
 }
