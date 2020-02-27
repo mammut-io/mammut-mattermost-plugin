@@ -67,7 +67,7 @@ func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request,
 
 	_, posterr := p.API.CreatePost(&model.Post{
 		UserId:    mammutresponse.UserID,
-		ChannelId: mammutresponse.ChanelID,
+		ChannelId: mammutresponse.ChannelID,
 		Message:   mammutresponse.Message,
 	})
 	if posterr != nil {

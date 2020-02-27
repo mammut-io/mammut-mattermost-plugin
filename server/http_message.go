@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"path"
@@ -13,7 +12,7 @@ import (
 // Perform an HTTP POST request to an integration's action endpoint.
 // Caller must consume and close returned http.Response as necessary.
 // For internal requests, requests are routed directly to a plugin ServerHTTP hook
-func (p *Plugin) doActionRequest(rawURL string) (*http.Response, *model.AppError) {
+func (p *Plugin) doActionRequest(rawURL string, body []byte) (*http.Response, *model.AppError) {
 	rawURLPath := path.Clean(rawURL)
 	p.API.LogInfo(
 		"##################################",
@@ -25,18 +24,12 @@ func (p *Plugin) doActionRequest(rawURL string) (*http.Response, *model.AppError
 	p.API.LogInfo(
 		"##################################",
 	)
-	testbody := &MammutResponse{
-		UserID:   p.botID,
-		ChanelID: "wnkycixbb3bgjghobwb99ndjka",
-		Message:  "Pereira",
-	}
 
-	jsonTest, err := json.Marshal(testbody)
-	req, err := http.NewRequest("POST", "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook", strings.NewReader(string(jsonTest)))
+	req, err := http.NewRequest("POST", "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook", strings.NewReader(string(body)))
 	if err != nil {
 		return nil, model.NewAppError("DoActionRequest1", "api.post.do_action.action_integration.app_error", nil, err.Error(), http.StatusBadRequest)
 	}
-	req.Header.Add("Mattermost-User-Id", "theuserid")
+	req.Header.Add("Mattermost-User-Id", p.botID)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 

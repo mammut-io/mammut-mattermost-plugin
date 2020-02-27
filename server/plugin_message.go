@@ -1,19 +1,31 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 )
 
-func (p *Plugin) postMammutPluginMessageToAPI(id, msg string) *model.AppError {
+func (p *Plugin) postMammutPluginMessageToAPI(channelID, msg string) *model.AppError {
 	configuration := p.getConfiguration()
 
 	if configuration.disabled {
 		return nil
 	}
 
-	_, err := p.doActionRequest(configuration.MammutAPIURL)
+	body := &MammutResponse{
+		UserID:    p.botID,
+		ChannelID: channelID,
+		Message:   msg,
+	}
+	jsonBody, jsonErr := json.Marshal(body)
+	//TODO:no se si esta es la forma correcta de manejar el error
+	if jsonErr != nil {
+		return model.NewAppError("postMammutPluginMessageToAPI", "plugin.MessageHasBeenPosted.postMammutPluginMessageToAPI.json.marshal", nil, jsonErr.Error(), http.StatusBadRequest)
+	}
+	_, err := p.doActionRequest(configuration.MammutAPIURL, jsonBody)
 
 	return err
 }
@@ -24,7 +36,7 @@ func (p *Plugin) postMammutPluginMessage(id, msg string) *model.AppError {
 	)
 	p.API.LogInfo(
 		"id",
-		"chanelid", id,
+		"channelid", id,
 		"botid", p.botID,
 	)
 	p.API.LogInfo(

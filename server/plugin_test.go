@@ -47,7 +47,7 @@ func TestServeHTTP2(t *testing.T) {
 	plugin.SetAPI(api)
 	testbody := &MammutResponse{
 		UserID: "elieser",
-		ChanelID: "Pereira",
+		ChannelID: "Pereira",
 		Message: "Pereira",
 	}
 	jsonTest, err := json.Marshal(testbody)
