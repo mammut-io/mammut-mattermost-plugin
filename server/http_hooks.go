@@ -31,10 +31,11 @@ func (p *Plugin) serveHTTPOriginal(w http.ResponseWriter, r *http.Request) {
 
 func (p *Plugin) httpMeetingSettings(w http.ResponseWriter, r *http.Request) {
 
+	//not available if not authenticated, we remove this simple validation
 	mattermostUserID := r.Header.Get("Mattermost-User-Id")
-	if mattermostUserID == "" {
-		http.Error(w, "Not Authorized", http.StatusUnauthorized)
-	}
+	//if mattermostUserID == "" {
+	//	http.Error(w, "Not Authorized", http.StatusUnauthorized)
+	//}
 
 	switch r.Method {
 	case http.MethodPost:
@@ -74,6 +75,7 @@ func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	w.WriteHeader(200)
+	//w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	//fmt.Fprint(w, "Hello, world!")
 }

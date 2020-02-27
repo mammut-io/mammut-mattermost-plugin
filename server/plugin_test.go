@@ -67,6 +67,6 @@ func TestServeHTTP2(t *testing.T) {
 	//bodyString := string(bodyBytes)
 
 	//assert.Equal(200, bodyString)
-    status := result.StatusCode
+	status := result.StatusCode
 	assert.Equal(200, status)
 }
