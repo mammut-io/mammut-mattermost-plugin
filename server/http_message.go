@@ -19,13 +19,14 @@ func (p *Plugin) doActionRequest(rawURL string, body []byte) (*http.Response, *m
 	)
 	p.API.LogInfo(
 		"rawURLPath",
+		"rawURL", rawURL,
 		"rawURLPath", rawURLPath,
 	)
 	p.API.LogInfo(
 		"##################################",
 	)
 
-	req, err := http.NewRequest("POST", "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook", strings.NewReader(string(body)))
+	req, err := http.NewRequest("POST", rawURL, strings.NewReader(string(body)))
 	if err != nil {
 		return nil, model.NewAppError("DoActionRequest1", "api.post.do_action.action_integration.app_error", nil, err.Error(), http.StatusBadRequest)
 	}

@@ -25,7 +25,13 @@ func (p *Plugin) postMammutPluginMessageToAPI(channelID, msg string) *model.AppE
 	if jsonErr != nil {
 		return model.NewAppError("postMammutPluginMessageToAPI", "plugin.MessageHasBeenPosted.postMammutPluginMessageToAPI.json.marshal", nil, jsonErr.Error(), http.StatusBadRequest)
 	}
-	_, err := p.doActionRequest(configuration.MammutAPIURL, jsonBody)
+	//TODO: ajustar esto para funcionar con endpoint correcto
+	//pluginID := "com.mattermost.mammut-mattermos-plugin"
+	//mammutResponseEndpoint := "/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook"
+	//url := *p.API.GetConfig().ServiceSettings.SiteURL + mammutResponseEndpoint
+	url := "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook"
+	//_, err := p.doActionRequest(configuration.MammutAPIURL, jsonBody)
+	_, err := p.doActionRequest(url, jsonBody)
 
 	return err
 }

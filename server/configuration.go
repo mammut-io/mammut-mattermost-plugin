@@ -58,6 +58,9 @@ type configuration struct {
 
 	// MammutAPIURL is the url of mammut to talk with.
 	MammutAPIURL string
+
+	// MammutUserID is the url of mammut to talk with.
+	MammutUserID string
 }
 
 // Clone deep copies the configuration. Your implementation may only require a shallow copy if
@@ -230,7 +233,7 @@ func (p *Plugin) OnConfigurationChange() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to ensure demo channels")
 	}
-
+	p.ensureMammutUser(configuration)
 	p.diffConfiguration(configuration)
 
 	p.setConfiguration(configuration)
@@ -325,4 +328,34 @@ func (p *Plugin) setEnabled(enabled bool) {
 	configuration.disabled = !enabled
 
 	p.setConfiguration(configuration)
+}
+
+func (p *Plugin) ensureMammutUser(configuration *configuration) {
+	if configuration.MammutUserID == "" {
+		p.createMammutUser(configuration)
+	}
+	//if configuration.MammutUserID != "" {
+	//	p.addMatermostBotToMammut
+	//}
+}
+
+func (p *Plugin) createMammutUser(configuration *configuration) (string, error) {
+	requestBody := &MammutUserPayload{
+		UserType:         "machine",
+		Username:         configuration.Username,
+		MattermostUserID: p.botID,
+	}
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"mammutuserpayload",
+		"mammutuserpayload", requestBody,
+	)
+	_, err := p.MammutPayloadToMAP(requestBody)
+	if err != nil {
+		return "", err
+	}
+	//p.doActionRequest(configuration.MammutAPIURL, jsonBody)
+	return "", nil
 }
