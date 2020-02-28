@@ -54,6 +54,14 @@ const manifestStr = `
         "default": "https://api.mammut.io"
       },
       {
+        "key": "MammutUserID",
+        "display_name": "MammutUserID",
+        "type": "number",
+        "help_text": "The mammut id in api to talk with.",
+        "placeholder": "",
+        "default": 0
+      },
+      {
         "key": "secretNumber",
         "display_name": "Secret Number",
         "type": "number",

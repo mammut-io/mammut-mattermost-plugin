@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/url"
 
 	"github.com/pkg/errors"
 
@@ -59,8 +61,8 @@ type configuration struct {
 	// MammutAPIURL is the url of mammut to talk with.
 	MammutAPIURL string
 
-	// MammutUserID is the url of mammut to talk with.
-	MammutUserID string
+	// MammutUserID is the id of mammut to talk with.
+	MammutUserID int64
 }
 
 // Clone deep copies the configuration. Your implementation may only require a shallow copy if
@@ -331,12 +333,12 @@ func (p *Plugin) setEnabled(enabled bool) {
 }
 
 func (p *Plugin) ensureMammutUser(configuration *configuration) {
-	if configuration.MammutUserID == "" {
+	if configuration.MammutUserID == 0 {
 		p.createMammutUser(configuration)
 	}
-	//if configuration.MammutUserID != "" {
-	//	p.addMatermostBotToMammut
-	//}
+	if configuration.MammutUserID != 0 {
+		p.addMatermostBotToMammut(configuration)
+	}
 }
 
 func (p *Plugin) createMammutUser(configuration *configuration) (string, error) {
@@ -352,10 +354,135 @@ func (p *Plugin) createMammutUser(configuration *configuration) (string, error) 
 		"mammutuserpayload",
 		"mammutuserpayload", requestBody,
 	)
-	_, err := p.MammutPayloadToMAP(requestBody)
+	jsonBody, err := p.MammutPayloadToJSON(requestBody)
 	if err != nil {
 		return "", err
 	}
+	//TODO: ajustar esto para funcionar con endpoint correcto, deberia ser configuration.MammutAPIURL?
+	url := "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthooktemporal"
 	//p.doActionRequest(configuration.MammutAPIURL, jsonBody)
+	response, reqErr := p.doActionRequest(url, jsonBody)
+	if reqErr != nil {
+		p.API.LogError(
+			">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+		)
+		p.API.LogError(
+			"Error creating user",
+			"Error_creating_user", reqErr,
+		)
+		return "", err
+	}
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyString := string(bodyBytes)
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"bodystringresponse",
+		"bodystringresponse", bodyString,
+	)
+	var mammutUserResponse MammutUserCreationResponse
+	if err = json.Unmarshal(bodyBytes, &mammutUserResponse); err != nil {
+		return "", nil
+	}
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"data unmarschaled",
+		"data_unmarschaled", mammutUserResponse,
+	)
+	configuration.MammutUserID = mammutUserResponse.Taskresult[0].AffectedElementID
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"user_id_from_response",
+		"user_id_from_response", configuration.MammutUserID,
+	)
+	return "", nil
+}
+
+//TODO: que deberia retornar este metodo y createMammutUser
+func (p *Plugin) addMatermostBotToMammut(configuration *configuration) (string, error) {
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"We allready have a MAMMUT_ID",
+		"MAMMUT_ID", configuration.MammutUserID,
+	)
+	//TODO:armar este url dinamicamente, hacer requet y si reponde 200 OK seguimos sino lanzamos error
+	//updateURL := "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/app:mammut-1/graph/user:1234?mattermost-user-id=[\"(mattermostdeployment.com,bot-identifier-2)\"]"
+	updateURL := "/plugins/com.mattermost.mammut-mattermos-plugin/app:mammut-1/graph/user:1234"
+	parsed, updateUrr := url.Parse(updateURL)
+	if updateUrr != nil {
+		return "", updateUrr
+	}
+	mammutQuery := parsed.Query()
+	mammutQuery.Set("mattermost-user-id", "[\"(mattermostdeployment.com,bot-identifier-2)\"]")
+	//stringvalue := "(mattermostdeployment.com,bot-identifier-2)"
+	//mammutQuery.Set("mattermost-user-id", []string{stringvalue})
+	fmt.Println(mammutQuery)
+	fmt.Println(mammutQuery["mattermost-user-id"][0])
+	parsed.RawQuery = mammutQuery.Encode()
+	mammutBaseURL := "http://localhost:8065"
+	mammutBase, err := url.Parse(mammutBaseURL)
+	if err != nil {
+		return "", err
+	}
+	//fmt.Println(mammutBase.ResolveReference(parsed))
+	requestBody := &MammutUserPayload{}
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"mammutuserpayload",
+		"mammutuserpayload", requestBody,
+	)
+	jsonBody, err := p.MammutPayloadToJSON(requestBody)
+	if err != nil {
+		return "", err
+	}
+	//TODO: ajustar esto para funcionar con endpoint correcto, deberia ser configuration.MammutAPIURL?
+	response, reqErr := p.doActionRequest(mammutBase.ResolveReference(parsed).String(), jsonBody)
+	if reqErr != nil {
+		p.API.LogError(
+			">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+		)
+		p.API.LogError(
+			"Error creating user",
+			"Error_creating_user", reqErr,
+		)
+		return "", err
+	}
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyString := string(bodyBytes)
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"bodystringresponseonexistingmammutid",
+		"bodystringresponseonexistingmammutid", bodyString,
+	)
+	var mammutUserResponse MammutUserCreationResponse
+	if err = json.Unmarshal(bodyBytes, &mammutUserResponse); err != nil {
+		return "", nil
+	}
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"data unmarschaled_existing_mammutid",
+		"data_unmarschaled_existing_mammutid", mammutUserResponse,
+	)
+	configuration.MammutUserID = mammutUserResponse.Taskresult[0].AffectedElementID
+	p.API.LogInfo(
+		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+	)
+	p.API.LogInfo(
+		"user_id_from_response_existin_mammutid",
+		"user_id_from_response_existin_mammutid", configuration.MammutUserID,
+	)
 	return "", nil
 }

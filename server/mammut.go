@@ -1,5 +1,9 @@
 package main
 
+import (
+	"encoding/json"
+)
+
 //MammutResponse response from mammut api
 type MammutResponse struct {
 	UserID    string
@@ -9,13 +13,27 @@ type MammutResponse struct {
 
 //MammutUserPayload response from mammut api
 type MammutUserPayload struct {
-	UserType         string
-	Username         string
-	MattermostUserID string
+	UserType         string `json:"user-type"`
+	Username         string `json:"name"`
+	MattermostUserID string `json:"mattermost-user-id"`
 }
 
-//MammutPayloadToMAP marshals MammutUserPayload
-func (p *Plugin) MammutPayloadToMAP(mammutuserpayload *MammutUserPayload) (map[string]string, error) {
+//TaskResultBasic used by MammutUserCreationResponse for maping reponse json
+type TaskResultBasic struct {
+	AffectedElementID   int64         `json:"affectedElementId"`
+	AffectedElementName string        `json:"affectedElementName"`
+	AffectedElementType string        `json:"affectedElementType"`
+	TaskIDList          []interface{} `json:"taskIdList"`
+}
+
+//MammutUserCreationResponse is to mapo the reponse of ammut creation from json
+type MammutUserCreationResponse struct {
+	Status     string            `json:"status"`
+	Taskresult []TaskResultBasic `json:"taskresult"`
+}
+
+//MammutPayloadToJSON marshals MammutUserPayload
+func (p *Plugin) MammutPayloadToJSON(mammutuserpayload *MammutUserPayload) ([]byte, error) {
 	var jsonLoad map[string]string
 	jsonLoad = make(map[string]string)
 	jsonLoad["user-type"] = mammutuserpayload.UserType
@@ -28,5 +46,10 @@ func (p *Plugin) MammutPayloadToMAP(mammutuserpayload *MammutUserPayload) (map[s
 		"jsonload",
 		"jsonload", jsonLoad,
 	)
-	return jsonLoad, nil
+	jsonLoadResult, err := json.Marshal(jsonLoad)
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonLoadResult, nil
 }
