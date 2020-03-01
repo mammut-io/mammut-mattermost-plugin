@@ -1,83 +1,166 @@
-# Plugin Starter Template [![CircleCI branch](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-starter-template/master.svg)](https://circleci.com/gh/mattermost/mattermost-plugin-starter-template)
+# Mattermost Mammut bot integration
 
-This plugin serves as a starting point for writing a Mattermost plugin. Feel free to base your own plugin off this repository.
+Mammut is a project with the aim of chatbots with real conversational capabilities. Is an ongoing project and is not fully public yet.
 
-To learn more about plugins, see [our plugin documentation](https://developers.mattermost.com/extend/plugins/).
+This mattermost plugin allows you to integrate a Mattermost bot from your Mattermost deployment with Mammut platform for Kubernetes ChatOps operability from your Mattermost deployment.
 
-## Getting Started
-Use GitHub's template feature to make a copy of this repository by clicking the "Use this template" button then clone outside of `$GOPATH`.
+These are the instructions for succesfully integrate the mattermost plugin with mammut public API.
 
-Alternatively shallow clone the repository to a directory outside of `$GOPATH` matching your plugin name:
+
+# Simulated Kubernetes cluster vs Real connection simulated cluster
+
+Currently we support only a simulation of Kubernetes ChatOps. This means that the training package used for training the bot is hand written, and the bot will handle that static information in its knowledge base.
+
+In the next weeks we'll fully support automatic data pulling from the Kubernetes cluster being associated.
+
+# Integration steps
+
+## Installing the plugin
+
+[Elieser instructions here]
+* Install the plugin in the mattermost deployment
+* Create a new bot from within the plugin.
+* Getting the Mammut Bot ID from this step. 
+
+## Training the bot.
+
+### Retrieve the ID of Alex Mammut
+Mammut API Endpoint: `https://api.mammut.io/app:mammut-1/fixed-vertex?type-name=user&config-id=mammut&depth=1`
+HTTP GET
+Expected Response: 
+```javascript
+    {
+        "count":1,
+        "data": { 
+            "user":[
+                {
+                    ...
+                    "user-type":"machine",
+                    "name":"Alex",
+                    "id":8288,
+                    "main-email":"alex@mammut.io",
+                    ...
+                }
+            ]
+        },
+        "status":"Success"
+    }
 ```
-git clone --depth 1 https://github.com/mattermost/mattermost-plugin-starter-template com.example.my-plugin
-```
 
-Note that this project uses [Go modules](https://github.com/golang/go/wiki/Modules). Be sure to locate the project outside of `$GOPATH`, or allow the use of Go modules within your `$GOPATH` with an `export GO111MODULE=on`.
+Keep that `id` field:
+Alex mammut id: `8288`
 
-Edit `plugin.json` with your `id`, `name`, and `description`:
+### Create a new 'normal' user in Mammut: 
+Mammut API Endpoint: `https://api.mammut.io/app:mammut-1/graph/user`
+HTTP POST
+Content-type application/json
+```javascript
+   {
+       "user-type": "normal",
+       "main-email": "testingemail@mammut.io"
+   } 
 ```
+Example response status code: `200 OK`
+```javascript
 {
-    "id": "com.example.my-plugin",
-    "name": "My Plugin",
-    "description": "A plugin to enhance Mattermost."
+    "status": "Success",
+    "taskResult": [
+        {
+            "affectedElementId": 4136,
+            "affectedElementName": "user",
+            "affectedElementType": "Vertex",
+            "taskIdList": [
+                "Trigger: user-chat-in-room-created - Vertex: user(4136)"
+            ]
+        },
+        {
+            "affectedElementId": 4272,
+            "affectedElementName": "room",
+            "affectedElementType": "Vertex"
+        },
+        {
+            "affectedElementId": 3077,
+            "affectedElementName": "chat-in",
+            "affectedElementType": "Edge"
+        },
+        {
+            "affectedElementId": 2565,
+            "affectedElementName": "create",
+            "affectedElementType": "Edge"
+        },
+        {
+            "affectedElementId": 8288,
+            "affectedElementName": "user",
+            "affectedElementType": "Vertex",
+            "taskIdList": []
+        },
+        {
+            "affectedElementId": 40960521,
+            "affectedElementName": "chat-in",
+            "affectedElementType": "Edge"
+        }
+    ]
 }
 ```
+Keep the first two objects `affectedElementId` fields. 
 
-Build your plugin:
-```
-make
-```
+Id of your normal user: `4136` 
+Id of your room with Mammut Alex: `4272`  
 
-This will produce a single plugin file (with support for multiple architectures) for upload to your Mattermost server:
+### Start a compilation training of your package
 
-```
-dist/com.example.my-plugin.tar.gz
-```
+Need to have your presentation ID: `1fe9aNv4EAS7QIUY0zqZtEv6la91_V_D1IMQSFhP-Q1g`
 
-There is a build target to automate deploying and enabling the plugin to your server, but it requires login credentials:
-```
-export MM_SERVICESETTINGS_SITEURL=http://localhost:8065
-export MM_ADMIN_USERNAME=admin
-export MM_ADMIN_PASSWORD=password
-make deploy
-```
+Start a compilation training by making the request. 
+Mammut API Endpoint: `https://98a75328.ngrok.io/app:mammut-1/actions/compile`
+HTTP POST
+Content-Type application/json
 
-or configuration of a [personal access token](https://docs.mattermost.com/developer/personal-access-tokens.html):
-```
-export MM_SERVICESETTINGS_SITEURL=http://localhost:8065
-export MM_ADMIN_TOKEN=j44acwd8obn78cdcx7koid4jkr
-make deploy
-```
-
-Alternatively, if you are running your `mattermost-server` out of a sibling directory by the same name, use the `deploy` target alone to  unpack the files into the right directory. You will need to restart your server and manually enable your plugin.
-
-In production, deploy and upload your plugin via the [System Console](https://about.mattermost.com/default-plugin-uploads).
-
-## Q&A
-
-### How do I make a server-only or web app-only plugin?
-
-Simply delete the `server` or `webapp` folders and remove the corresponding sections from `plugin.json`. The build scripts will skip the missing portions automatically.
-
-### How do I include assets in the plugin bundle?
-
-Place them into the `assets` directory. To use an asset at runtime, build the path to your asset and open as a regular file:
-
-```go
-bundlePath, err := p.API.GetBundlePath()
-if err != nil {
-    return errors.Wrap(err, "failed to get bundle path")
-}
-
-profileImage, err := ioutil.ReadFile(filepath.Join(bundlePath, "assets", "profile_image.png"))
-if err != nil {
-    return errors.Wrap(err, "failed to read profile image")
-}
-
-if appErr := p.API.SetProfileImage(userID, profileImage); appErr != nil {
-    return errors.Wrap(err, "failed to set profile image")
+```javascript
+    {
+        "packageId": "1fe9aNv4EAS7QIUY0zqZtEv6la91_V_D1IMQSFhP-Q1g", //Your presentation Id
+        "executeSamplingCorpus": true,
+        "corpusIds": [1],
+        "slideMetadataTokenSeparator": "->",
+        "mammutId": 1234, //The Mammut id of your mattermost bot created using the plugin
+        "userId": 4136, // The user id previously created.
+        "roomId": 4272, // The room id previously created.
+        "regionalSettings": "en",
+        "mammutLoggerId": 8288 // Alex mammut Id
 }
 ```
+Example response status code: `200 OK`
 
-### How do I build the plugin with unminified JavaScript?
-Use `make debug-dist` and `make debug-deploy` in place of `make dist` and `make deploy` to configure webpack to generate unminified Javascript.
+### Wait for your compilation to succeed
+
+Keep yourself making request to your compilation room until you can see there was a `succesfull compilation` message.
+Mammut API Endpoint: `https://api.mammut.io/app:mammut-1/graph:1/room:4272/with::thought?creation-date.last(20)`
+HTTP POST
+Content-Type application/json
+
+```javascript
+    {
+    "count": 1,
+    "data": {
+        "thought": [
+            ...
+            {
+                "text": "...",
+                "id": 4152,
+                "creation-date": "2019-12-07T22:02:42+00:00",
+            },
+            {
+                "text": "...",
+                "id": 8272,
+                "creation-date": "2019-12-07T22:02:42+00:00",
+            {
+                "text": "Compilation completed successfully. Extra information: Finished compilation for Compilation Task: 4176 - Compilation Summary:Mammut: 4176: Total of Variables: 15 - Total of Synthetic Dictionary Entries: 23 - Total of Tuples: 16",
+                "id": 12352,
+                "creation-date": "2019-12-07T22:03:12+00:00",
+            }
+            ...
+        ]
+    },
+    "status": "Success"
+}
+```
