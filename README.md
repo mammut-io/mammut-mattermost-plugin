@@ -7,11 +7,22 @@ This mattermost plugin allows you to integrate a Mattermost bot from your Matter
 These are the instructions for succesfully integrate the mattermost plugin with mammut public API.
 
 
-# Simulated Kubernetes cluster vs Real connection simulated cluster
+# Simulated Kubernetes cluster vs Real connection cluster
 
 Currently we support only a simulation of Kubernetes ChatOps. This means that the training package used for training the bot is hand written, and the bot will handle that static information in its knowledge base.
 
 In the next weeks we'll fully support automatic data pulling from the Kubernetes cluster being associated.
+
+## Simulated Kubernetes
+For a simulation of your Kubernetes Cluster you need to write a Mammut Package. [Here is a tutorial on the topic](https://doc.mammut.io/basic-tutorial/). 
+
+For that, you will create a Kubernetes Ontology a will fill the Knowledge by hand with your cluster information. With this, you can train your bot and he will handle sceneries using your hand written knowledge base based on your cluster.
+
+You can create your package by cloning this templates for a Kubernetes mammut bot: [Copia de bKubernetes Package].
+
+## Real connection cluster
+
+We aim to support full automatic knowledge population of your mattermost mammut bot by obtaining it directly from your Kubernetes API cluster.
 
 # Integration steps
 
