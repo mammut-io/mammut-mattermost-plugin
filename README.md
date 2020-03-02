@@ -1,6 +1,6 @@
 # Mattermost Mammut bot integration
 
-Mammut is a project with the aim of chatbots with real conversational capabilities. Is an ongoing project and is not fully public yet.
+Mammut is a project with the aim of provide chatbots with real conversational capabilities. Is an ongoing project and is not fully public yet.
 
 We're developing a documentation site including a wide range of content: key concepts within Mammut platform, tutorials, integrations with different platforms and tools. [Our site](https://mammut.io/) will contain the news when the official documentation goes out!.
 
@@ -30,7 +30,7 @@ The next steps in this section will walk throught the successfull training and t
 
 4. Change the permissions to your spreadsheet and presentation documents to *anyone with the link can edit*:
 
- ![image of the right permissions](/imgs/doc6.png)
+ ![image of the right permissions](/imgs/doc7.png)
 
 ## Installing the plugin
 
@@ -188,7 +188,8 @@ Now that the compilation completed successfully, We can talk with the bot using 
 
 ![image from your corpus](./imgs/doc10.png)
 
-
+We can use any of the scenery examples in the sheet. This bot doesn't have AI activated yet, so It can only handle conversations like the ones in the sheet.
+We'll support AI for the NLP in the sooner future so the bots can handle any kind of conversation!.
 
 # Upcoming: Real connection cluster
 
