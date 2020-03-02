@@ -44,19 +44,6 @@ Now you need to set the `MammutApiUrl` this refers to the instance of the mammut
 
  ![image of config for MammutUrl](/imgs/plugin/install2.png)
 
-You should be ready to talk to your bot.<br>
-
-Go to your team section, and create a Direct Message chanel with the bot user `mammutplugin`.
-
- ![image of config for MammutUrl](/imgs/plugin/install3.png)
-
-After that, simply text to your bot and enjoy.
-
- ![image of config for MammutUrl](/imgs/plugin/install4.png)
-
-* Install the plugin in the mattermost deployment
-* Create a new bot from within the plugin.
-* Getting the Mammut Bot ID from this step. 
 
 ## Training the bot.
 
@@ -210,6 +197,16 @@ Now that the compilation completed successfully, We can talk with the bot using 
 
 We can use any of the scenery examples in the sheet. This bot doesn't have AI activated yet, so It can only handle conversations like the ones in the sheet.
 We'll support AI for the NLP in the sooner future so the bots can handle any kind of conversation!.
+
+You should be ready to talk to your bot.<br>
+
+Go to your team section, and create a Direct Message chanel with the bot user `mammutplugin`.
+
+ ![image of config for MammutUrl](/imgs/plugin/install3.png)
+
+After that, simply text to your bot and enjoy.
+
+ ![image of config for MammutUrl](/imgs/plugin/install4.png)
 
 # Upcoming: Real connection cluster
 
