@@ -355,9 +355,9 @@ func (p *Plugin) createMammutUser(configuration *configuration) (string, error) 
 	mammutMattermostUserID := fmt.Sprintf("%s%s%s", *configMattermostURL, ",", p.botID)
 	requestBody := &MammutUserPayload{
 		UserType:         "machine",
-		MainEmail:        "",
 		Username:         configuration.Username,
 		MattermostUserID: []string{mammutMattermostUserID},
+		//MainEmail:        "",
 	}
 	p.API.LogInfo(
 		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
@@ -371,7 +371,6 @@ func (p *Plugin) createMammutUser(configuration *configuration) (string, error) 
 		return "", err
 	}
 	url := configuration.MammutAPIURL + "/app:mammut-1/graph:2/user"
-	//p.doActionRequest(configuration.MammutAPIURL, jsonBody)
 	response, reqErr := p.doActionRequest(url, jsonBody)
 	if reqErr != nil {
 		p.API.LogError(
@@ -423,8 +422,6 @@ func (p *Plugin) addMatermostBotToMammut(configuration *configuration) (string, 
 		"We allready have a MAMMUT_ID",
 		"MAMMUT_ID", configuration.MammutUserID,
 	)
-	//TODO:armar este url dinamicamente, hacer requet y si reponde 200 OK seguimos sino lanzamos error
-	//updateURL := "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/app:mammut-1/graph/user:1234?mattermost-user-id=[\"(mattermostdeployment.com,bot-identifier-2)\"]"
 	configMattermostURL := p.API.GetConfig().ServiceSettings.SiteURL
 	//TODO: this is beacuse mammut not suporting ":"
 	configMattermostCleanURL := strings.Replace(*configMattermostURL, "https://", "", -1)
@@ -439,10 +436,7 @@ func (p *Plugin) addMatermostBotToMammut(configuration *configuration) (string, 
 	}
 	mammutQuery := parsed.Query()
 	mammutMattermostUserID := fmt.Sprintf("%s%s%s%s%s", "[\"(", configMattermostCleanURL, ",", p.botID, ")\"]")
-	//mammutQuery.Set("mattermost-user-id", "[\"(c7204112.ngrok.io,3wz3ippb7igqzfj4dc79x1nxih)\"]")
 	mammutQuery.Set("mattermost-user-id", mammutMattermostUserID)
-	//stringvalue := "(mattermostdeployment.com,bot-identifier-2)"
-	//mammutQuery.Set("mattermost-user-id", []string{stringvalue})
 	fmt.Println(mammutQuery)
 	fmt.Println(mammutQuery["mattermost-user-id"][0])
 	parsed.RawQuery = mammutQuery.Encode()
@@ -450,7 +444,6 @@ func (p *Plugin) addMatermostBotToMammut(configuration *configuration) (string, 
 	if err != nil {
 		return "", err
 	}
-	//fmt.Println(mammutBase.ResolveReference(parsed))
 	requestBody := &MammutUserPayload{}
 	p.API.LogInfo(
 		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
@@ -463,7 +456,6 @@ func (p *Plugin) addMatermostBotToMammut(configuration *configuration) (string, 
 	if err != nil {
 		return "", err
 	}
-	//TODO: ajustar esto para funcionar con endpoint correcto, deberia ser configuration.MammutAPIURL?
 	response, reqErr := p.doActionRequest(mammutBase.ResolveReference(parsed).String(), jsonBody)
 	if reqErr != nil {
 		p.API.LogError(

@@ -22,12 +22,8 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	updateURL := "/app:mammut-1/graph/user:1234"
 
 	switch path := r.URL.Path; path {
-	//case "/mammuthooktemporal":
-	//	p.httpMeetingSettingsTemporal(w, r)
-	//case updateURL:
-	//	p.httpMeetingSettingsTemporal(w, r)
 	case "/mammuthook":
-		p.httpMeetingSettings(w, r)
+		p.httpMammutHooks(w, r)
 	case "/":
 		p.serveHTTPOriginal(w, r)
 	default:
@@ -48,8 +44,8 @@ func (p *Plugin) serveHTTPOriginal(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Hello, world!")
 }
 
-//httpMeetingSettings valida si el metodo es post e invoca funcion que crea el post en canal correspondiente
-func (p *Plugin) httpMeetingSettings(w http.ResponseWriter, r *http.Request) {
+//httpMammutHooks valida si el metodo es post e invoca funcion que crea el post en canal correspondiente
+func (p *Plugin) httpMammutHooks(w http.ResponseWriter, r *http.Request) {
 	p.API.LogInfo(
 		"SERVE HTPP FUNCTION ACTIVATED",
 	)
@@ -62,15 +58,14 @@ func (p *Plugin) httpMeetingSettings(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodPost:
-		p.httpMeetingSaveSettings(w, r, mattermostUserID)
+		p.httpMammutHooksPostAction(w, r, mattermostUserID)
 	default:
 		http.Error(w, "Request: "+r.Method+" is not allowed.", http.StatusMethodNotAllowed)
 	}
-	//fmt.Fprint(w, "Hello, world!")
 }
 
-//httpMeetingSaveSettings crea el post al canal cuando mammutAPI envia respuesta de la conversacion
-func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request, mmUserID string) {
+//httpMammutHooksPostAction crea el post al canal cuando mammutAPI envia respuesta de la conversacion
+func (p *Plugin) httpMammutHooksPostAction(w http.ResponseWriter, r *http.Request, mmUserID string) {
 
 	//userID := r.Header.Get("Mattermost-User-ID")
 	//if userID == "" {
@@ -110,64 +105,3 @@ func (p *Plugin) httpMeetingSaveSettings(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusOK)
 	//fmt.Fprint(w, "Hello, world!")
 }
-
-//httpMeetingSettingsTemporal just create a temporal endpoint to test user creation
-//func (p *Plugin) httpMeetingSettingsTemporal(w http.ResponseWriter, r *http.Request) {
-//	mattermostUserID := r.Header.Get("Mattermost-User-Id")
-//
-//	switch r.Method {
-//	case http.MethodPost:
-//		p.httpMeetingSaveSettingsTemporal(w, r, mattermostUserID)
-//		p.API.LogInfo(
-//			"EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR",
-//		)
-//	default:
-//		p.API.LogInfo(
-//			"EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR",
-//		)
-//		http.Error(w, "Request: "+r.Method+" is not allowed.", http.StatusMethodNotAllowed)
-//	}
-//}
-//
-////httpMeetingSaveSettingsTemporal just create a temporal endpoint to test user creation
-//func (p *Plugin) httpMeetingSaveSettingsTemporal(w http.ResponseWriter, r *http.Request, mmUserID string) {
-//	p.API.LogInfo(
-//		"EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR",
-//	)
-//	body, err := ioutil.ReadAll(r.Body)
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusBadRequest)
-//		return
-//	}
-//	p.API.LogInfo(
-//		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-//	)
-//	p.API.LogInfo(
-//		"query on serving http",
-//		"r.URL.query", r.URL.Query(),
-//		//"r.URL.queryuserid", r.URL.Query()["mattermost-user-id"],
-//		//"r.URL.queryuseridindex0", r.URL.Query()["mattermost-user-id"][0],
-//	)
-//	p.API.LogInfo(
-//		"bodyOnTemporal",
-//		"body", body,
-//	)
-//	p.API.LogInfo(
-//		"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
-//	)
-//	trb := &TaskResultBasic{
-//		AffectedElementID:   1234,
-//		AffectedElementName: "mammutname",
-//		AffectedElementType: "machine",
-//		TaskIDList:          make([]interface{}, 0)}
-//	au := &MammutUserCreationResponse{
-//		Status:     "success",
-//		Taskresult: []TaskResultBasic{*trb}}
-//	//fmt.Println(trb)
-//	//fmt.Println(au)
-//	//fmt.Println(au.Taskresult[0].AffectedElementID)ed
-//	resp, err := json.Marshal(au)
-//	//w.WriteHeader(200)
-//	w.WriteHeader(http.StatusOK)
-//	w.Write(resp)
-//}

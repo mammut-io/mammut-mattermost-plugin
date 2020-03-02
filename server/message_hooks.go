@@ -33,8 +33,8 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 		"##################################",
 	)
 	p.API.LogInfo(
-		"bot",
-		"userbot", userbot,
+		"mattermost bot",
+		"mattermost_bot", userbot,
 	)
 	//TODO tengo que hacer esto o con el post.ChannelId basta?
 	channel, err := p.API.GetChannel(post.ChannelId)

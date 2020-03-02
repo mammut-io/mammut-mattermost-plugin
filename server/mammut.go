@@ -45,19 +45,6 @@ type MammutUserCreationResponse struct {
 
 //MammutPayloadToJSON marshals MammutUserPayload
 func (p *Plugin) MammutPayloadToJSON(mammutuserpayload *MammutUserPayload) ([]byte, error) {
-	//var jsonLoad map[string]string
-	//jsonLoad = make(map[string]string)
-	//jsonLoad["user-type"] = mammutuserpayload.UserType
-	//jsonLoad["name"] = mammutuserpayload.Username
-	//jsonLoad["mattermost-user-id"] = mammutuserpayload.MattermostUserID[0]
-	//p.API.LogInfo(
-	//	">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-	//)
-	//p.API.LogInfo(
-	//	"jsonload",
-	//	"jsonload", jsonLoad,
-	//)
-	//TODO: no necesitamos crear el jsonLoad, si tenemos el struct bien definido y funcionando
 	jsonLoadResult, err := json.Marshal(mammutuserpayload)
 	if err != nil {
 		return nil, err

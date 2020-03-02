@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"path"
 	"strings"
 
 	"github.com/mattermost/mattermost-server/v5/model"
@@ -13,19 +12,13 @@ import (
 // Caller must consume and close returned http.Response as necessary.
 // For internal requests, requests are routed directly to a plugin ServerHTTP hook
 func (p *Plugin) doActionRequest(rawURL string, body []byte) (*http.Response, *model.AppError) {
-	rawURLPath := path.Clean(rawURL)
 	p.API.LogInfo(
 		"##################################",
 	)
 	p.API.LogInfo(
 		"rawURLPath",
 		"rawURL", rawURL,
-		"rawURLPath", rawURLPath,
 	)
-	p.API.LogInfo(
-		"##################################",
-	)
-
 	req, err := http.NewRequest("POST", rawURL, strings.NewReader(string(body)))
 	if err != nil {
 		return nil, model.NewAppError("DoActionRequest1", "api.post.do_action.action_integration.app_error", nil, err.Error(), http.StatusBadRequest)

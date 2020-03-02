@@ -39,22 +39,22 @@ func TestServeHTTP2(t *testing.T) {
 	plugin := Plugin{}
 	api := &plugintest.API{}
     api.On("LogInfo", "SERVE HTPP FUNCTION ACTIVATED").Return("SERVE HTPP FUNCTION ACTIVATED", nil)
-    api.On("LogInfo", "MAMMUT response on hook","mammutresponseronhook", &MammutResponse{UserID:"elieser", ChannelID:"Pereira", Message:"Pereira"}).Return(nil, nil)
+    api.On("LogInfo", "MAMMUT response on hook","mammutresponseronhook", &MammutResponse{UserID:"user_id_1_placeholder", ChannelID:"chanel_id_placeholder", Message:"message_placeholder"}).Return(nil, nil)
     api.On("LogInfo", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>").Return(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", nil)
 	api.On("CreatePost", &model.Post{
-		UserId:    "elieser",
-		ChannelId: "Pereira",
-		Message:   "Pereira",
+		UserId:    "user_id_1_placeholder",
+		ChannelId: "chanel_id_placeholder",
+		Message:   "message_placeholder",
 	}).Return(&model.Post{
-		UserId:    "elieser",
-		ChannelId: "Pereira",
-		Message:   "Pereira",
+		UserId:    "user_id_1_placeholder",
+		ChannelId: "chanel_id_placeholder",
+		Message:   "message_placeholder",
 	}, nil)
 	plugin.SetAPI(api)
 	testbody := &MammutResponse{
-		UserID: "elieser",
-		ChannelID: "Pereira",
-		Message: "Pereira",
+		UserID: "user_id_1_placeholder",
+		ChannelID: "chanel_id_placeholder",
+		Message: "message_placeholder",
 	}
 	jsonTest, err := json.Marshal(testbody)
 	assert.Nil(err)
@@ -68,11 +68,6 @@ func TestServeHTTP2(t *testing.T) {
 
 	result := w.Result()
 	assert.NotNil(result)
-	//bodyBytes, err := ioutil.ReadAll(result.Body)
-	//assert.Nil(err)
-	//bodyString := string(bodyBytes)
-
-	//assert.Equal(200, bodyString)
 	status := result.StatusCode
 	assert.Equal(200, status)
 }

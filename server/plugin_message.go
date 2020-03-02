@@ -24,7 +24,6 @@ func (p *Plugin) postMammutPluginMessageToAPI(channelID string, user *model.User
 		Message:    msg,
 		UserEmail:  user.Email,
 		DomainName: configMattermostCleanURL,
-		//DomainName: "c7204112.ngrok.io",
 	}
 	p.API.LogInfo(
 		"##################################",
@@ -38,12 +37,7 @@ func (p *Plugin) postMammutPluginMessageToAPI(channelID string, user *model.User
 	if jsonErr != nil {
 		return model.NewAppError("postMammutPluginMessageToAPI", "plugin.MessageHasBeenPosted.postMammutPluginMessageToAPI.json.marshal", nil, jsonErr.Error(), http.StatusBadRequest)
 	}
-	//TODO: ajustar esto para funcionar con endpoint correcto
-	//pluginID := "com.mattermost.mammut-mattermos-plugin"
-	//mammutResponseEndpoint := "/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook"
-	//url := *p.API.GetConfig().ServiceSettings.SiteURL + mammutResponseEndpoint
 	url := configuration.MammutAPIURL + "/channel/mattermost"
-	//_, err := p.doActionRequest(configuration.MammutAPIURL, jsonBody)
 	_, err := p.doActionRequest(url, jsonBody)
 
 	return err
