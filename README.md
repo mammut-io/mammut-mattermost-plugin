@@ -2,43 +2,35 @@
 
 Mammut is a project with the aim of chatbots with real conversational capabilities. Is an ongoing project and is not fully public yet.
 
+We're developing a documentation site including a wide range of content: key concepts within Mammut platform, tutorials, integrations with different platforms and tools. [Our site](https://mammut.io/) will contain the news when the official documentation goes out!.
+
 This mattermost plugin allows you to integrate a Mattermost bot from your Mattermost deployment with Mammut platform for Kubernetes ChatOps operability from your Mattermost deployment.
 
-These are the instructions for succesfully integrate the mattermost plugin with mammut public API.
+These are the instructions for succesfully integrate the mattermost plugin with mammut public API .
 
-
-# Simulated Kubernetes cluster vs Real connection cluster
+# Simulated Kubernetes cluster 
 
 Currently we support only a simulation of Kubernetes ChatOps. This means that the training package used for training the bot is hand written, and the bot will handle that static information in its knowledge base.
 
-In the next weeks we'll fully support automatic data pulling from the Kubernetes cluster being associated.
+The next steps in this section will walk throught the successfull training and the simulation of sceneries found in the training package.
 
-## Simulated Kubernetes
-For a simulation of your Kubernetes Cluster you need to write a Mammut Package. [Here is a tutorial on the topic](https://doc.mammut.io/basic-tutorial/). 
+## Preparing your package
 
-For that, you will create a Kubernetes Ontology a will fill the Knowledge by hand with your cluster information. With this, you can train your bot and he will handle sceneries using your hand written knowledge base based on your cluster.
+1. Make a copy of our Kubernetes [package spreadsheet](https://docs.google.com/spreadsheets/d/1TvcBhs9SBTnQx3FVP6wNA0doga8HyGMsFKN5-tRmvDY)
 
-You can create your package by cloning this templates for a Kubernetes mammut bot: [Copia de bKubernetes Package].
+![image of the spreadsheet to copy](/imgs/doc8.png)
 
-## Real connection cluster
+2. Make a copy of our Kubernetes [package presentation](https://docs.google.com/presentation/d/1fe9aNv4EAS7QIUY0zqZtEv6la91_V_D1IMQSFhP-Q1g)
 
-We aim to support full automatic knowledge population of your mattermost mammut bot by obtaining it directly from your Kubernetes API cluster.
+![image of the presentation to copy](/imgs/doc7.png)
 
-For prepare your package to use your Kubernetes API from your cluster you need to follow this steps:
+3. Edit the *Sheet-Id* on the presentation with the `ID` of your spreadsheet copy.
 
-1. Add an access token that has authorization in your cluster in your package. Add it to your presentation package
+![image of the field to modify](/imgs/doc6.png)
 
-![image from your kubernetes credentials](./imgs/doc1.png)
+4. Change the permissions to your spreadsheet and presentation documents to *anyone with the link can edit*:
 
-2. Specify the `path` to your resources for the kubernetes API in the `endpoint` column of your vertex ontology
-
-![image from your kubernetes resource in your ontology](./imgs/doc2.png)
-
-![image from your kubernetes resource in your ontology](./imgs/doc3.png)
-
-![image from your kubernetes resource in your ontology](./imgs/doc4.png)
-
-# Integration steps
+ ![image of the right permissions](/imgs/doc6.png)
 
 ## Installing the plugin
 
@@ -134,7 +126,7 @@ Id of your room with Mammut Alex: `4272`
 
 ### Start a compilation training of your package
 
-Need to have your presentation ID: `1fe9aNv4EAS7QIUY0zqZtEv6la91_V_D1IMQSFhP-Q1g`
+Need to have the presentation ID of your presentation copy made in the section [Preparing your package](##preparing-your-package)
 
 Start a compilation training by making the request. 
 Mammut API Endpoint: `https://98a75328.ngrok.io/app:mammut-1/actions/compile`
@@ -143,7 +135,7 @@ Content-Type application/json
 
 ```javascript
     {
-        "packageId": "1fe9aNv4EAS7QIUY0zqZtEv6la91_V_D1IMQSFhP-Q1g", //Your presentation Id
+        "packageId": "presentation-id", //Your presentation Id
         "executeSamplingCorpus": true,
         "corpusIds": [1],
         "slideMetadataTokenSeparator": "->",
@@ -160,7 +152,7 @@ Example response status code: `200 OK`
 
 Keep yourself making request to your compilation room until you can see there was a `succesfull compilation` message.
 Mammut API Endpoint: `https://api.mammut.io/app:mammut-1/graph:1/room:4272/with::thought?creation-date.last(20)`
-HTTP POST
+HTTP GET
 Content-Type application/json
 
 ```javascript
@@ -192,4 +184,27 @@ Content-Type application/json
 
 ### Test your bot using Mattermost!
 
-![image from your bot mammut mattermost bot integration](./imgs/doc5.png)
+Now that the compilation completed successfully, We can talk with the bot using the sceneries from the `corpus` sheet in the spreadsheet.
+
+![image from your corpus](./imgs/doc10.png)
+
+
+
+# Upcoming: Real connection cluster
+
+We aim to support full automatic knowledge population of your mattermost mammut bot by obtaining it directly from your Kubernetes API cluster.
+In the next weeks we'll fully support automatic data pulling from the Kubernetes cluster being associated.
+
+For prepare your package to use your Kubernetes API from your cluster you need to follow this steps:
+
+1. Add an access token that has authorization in your cluster in your package. Add it to your presentation package
+
+![image from your kubernetes credentials](./imgs/doc1.png)
+
+2. Specify the `path` to your resources for the kubernetes API in the `endpoint` column of your vertex ontology
+
+![image from your kubernetes resource in your ontology](./imgs/doc2.png)
+
+![image from your kubernetes resource in your ontology](./imgs/doc3.png)
+
+![image from your kubernetes resource in your ontology](./imgs/doc4.png)
