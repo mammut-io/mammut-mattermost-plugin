@@ -44,6 +44,9 @@ Now you need to set the `MammutApiUrl` this refers to the instance of the mammut
 
  ![image of config for MammutUrl](/imgs/plugin/install2.png)
 
+To get your `MammutUserId` you can check your server logs. Soon we will deliver it to you in a more frienly way.
+ ![image of config for MammutUrl](/imgs/plugin/install5.png)
+
 
 ## Training the bot.
 

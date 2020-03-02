@@ -346,12 +346,15 @@ func (p *Plugin) ensureMammutUser(configuration *configuration) {
 
 func (p *Plugin) createMammutUser(configuration *configuration) (string, error) {
 	configMattermostURL := p.API.GetConfig().ServiceSettings.SiteURL
+	configMattermostCleanURL := strings.Replace(*configMattermostURL, "https://", "", -1)
 	mammutMattermostUserID := fmt.Sprintf("%s%s%s", *configMattermostURL, ",", p.botID)
+	//TODO: no me dejo crear usuario porque ya habia uno con string vacio com value
+	mammutMattermostTemporaryEmail := fmt.Sprintf("%s@%s", p.botID, configMattermostCleanURL)
 	requestBody := &MammutUserPayload{
 		UserType:         "machine",
 		Username:         configuration.Username,
 		MattermostUserID: []string{mammutMattermostUserID},
-		//MainEmail:        "",
+		MainEmail:        mammutMattermostTemporaryEmail,
 	}
 	p.API.LogInfo(
 		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
