@@ -2,25 +2,38 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 )
 
-func (p *Plugin) postMammutPluginMessageToAPI(channelID, msg string) *model.AppError {
+func (p *Plugin) postMammutPluginMessageToAPI(channelID string, user *model.User, msg string) *model.AppError {
 	configuration := p.getConfiguration()
 
 	if configuration.disabled {
 		return nil
 	}
-
-	body := &MammutResponse{
-		UserID:    p.botID,
-		ChannelID: channelID,
-		Message:   msg,
+	configMattermostURL := p.API.GetConfig().ServiceSettings.SiteURL
+	//TODO: this is beacuse mammut not suporting ":" yet
+	configMattermostCleanURL := strings.Replace(*configMattermostURL, "https://", "", -1)
+	mammutMessageBody := &MammutMessage{
+		UserID:     user.Id,
+		BotID:      p.botID,
+		ChannelID:  channelID,
+		Message:    msg,
+		UserEmail:  user.Email,
+		DomainName: configMattermostCleanURL,
+		//DomainName: "c7204112.ngrok.io",
 	}
-	jsonBody, jsonErr := json.Marshal(body)
+	p.API.LogInfo(
+		"##################################",
+	)
+	p.API.LogInfo(
+		"mammutMessageBody",
+		"mammutMessageBody", mammutMessageBody,
+	)
+	jsonBody, jsonErr := json.Marshal(mammutMessageBody)
 	//TODO:no se si esta es la forma correcta de manejar el error
 	if jsonErr != nil {
 		return model.NewAppError("postMammutPluginMessageToAPI", "plugin.MessageHasBeenPosted.postMammutPluginMessageToAPI.json.marshal", nil, jsonErr.Error(), http.StatusBadRequest)
@@ -29,40 +42,9 @@ func (p *Plugin) postMammutPluginMessageToAPI(channelID, msg string) *model.AppE
 	//pluginID := "com.mattermost.mammut-mattermos-plugin"
 	//mammutResponseEndpoint := "/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook"
 	//url := *p.API.GetConfig().ServiceSettings.SiteURL + mammutResponseEndpoint
-	url := "http://localhost:8065/plugins/com.mattermost.mammut-mattermos-plugin/mammuthook"
+	url := configuration.MammutAPIURL + "/channel/mattermost"
 	//_, err := p.doActionRequest(configuration.MammutAPIURL, jsonBody)
 	_, err := p.doActionRequest(url, jsonBody)
-
-	return err
-}
-func (p *Plugin) postMammutPluginMessage(id, msg string) *model.AppError {
-	configuration := p.getConfiguration()
-	p.API.LogInfo(
-		"##################################",
-	)
-	p.API.LogInfo(
-		"id",
-		"channelid", id,
-		"botid", p.botID,
-	)
-	p.API.LogInfo(
-		"##################################",
-	)
-
-	if configuration.disabled {
-		return nil
-	}
-
-	if configuration.EnableMentionUser {
-		msg = fmt.Sprintf("tag @%s | %s", configuration.MentionUser, msg)
-	}
-	msg = fmt.Sprintf("%s%s%s", configuration.TextStyle, msg, configuration.TextStyle)
-
-	_, err := p.API.CreatePost(&model.Post{
-		UserId:    p.botID,
-		ChannelId: id,
-		Message:   msg,
-	})
 
 	return err
 }

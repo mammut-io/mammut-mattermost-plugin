@@ -12,8 +12,8 @@ var manifest *model.Manifest
 
 const manifestStr = `
 {
-  "id": "com.mattermost.mammut-mattermos-plugin",
-  "name": "mammut-mattermos-plugin",
+  "id": "com.mattermost.mammut-mattermost-plugin",
+  "name": "mammut-mattermost-plugin",
   "description": "This plugin serves as a starting point for writing a Mattermost plugin.",
   "version": "0.1.0",
   "min_server_version": "5.12.0",

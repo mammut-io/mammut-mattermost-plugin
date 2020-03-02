@@ -18,7 +18,7 @@ func TestServeHTTP(t *testing.T) {
 	assert := assert.New(t)
 	plugin := Plugin{}
 	api := &plugintest.API{}
-    api.On("LogInfo", "EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR").Return("EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR", nil)
+    api.On("LogInfo", "SERVE HTPP FUNCTION ACTIVATED").Return("SERVE HTPP FUNCTION ACTIVATED", nil)
 	plugin.SetAPI(api)
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -38,7 +38,9 @@ func TestServeHTTP2(t *testing.T) {
 	assert := assert.New(t)
 	plugin := Plugin{}
 	api := &plugintest.API{}
-    api.On("LogInfo", "EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR").Return("EEEEEEEEEEEELLLLLLLLIIIIIIIIIIIEESEEEEEEEEEEERRRRRRRR", nil)
+    api.On("LogInfo", "SERVE HTPP FUNCTION ACTIVATED").Return("SERVE HTPP FUNCTION ACTIVATED", nil)
+    api.On("LogInfo", "MAMMUT response on hook","mammutresponseronhook", &MammutResponse{UserID:"elieser", ChannelID:"Pereira", Message:"Pereira"}).Return(nil, nil)
+    api.On("LogInfo", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>").Return(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", nil)
 	api.On("CreatePost", &model.Post{
 		UserId:    "elieser",
 		ChannelId: "Pereira",

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
@@ -62,21 +60,9 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 	)
 	msg := post.Message
 	if directChannel.Id == channel.Id {
-		if err := p.postMammutPluginMessageToAPI(channel.Id, msg); err != nil {
+		if err := p.postMammutPluginMessageToAPI(channel.Id, user, msg); err != nil {
 			p.API.LogError(
 				"failed to post MessageHasBeenPosted message to mammut API",
-				"channel_id", channel.Id,
-				"direct_channel_id", directChannel.Id,
-				"error", err.Error(),
-			)
-		}
-	}
-	//TODO: esto no va aqui, deberia ser on http event
-	msgResp := fmt.Sprintf("MessageHasBeenPosted: @%s, ~%s", user.Username, channel.Name)
-	if directChannel.Id == channel.Id {
-		if err := p.postMammutPluginMessage(channel.Id, msgResp); err != nil {
-			p.API.LogError(
-				"failed to post MessageHasBeenPosted message",
 				"channel_id", channel.Id,
 				"direct_channel_id", directChannel.Id,
 				"error", err.Error(),
