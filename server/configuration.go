@@ -47,9 +47,6 @@ type configuration struct {
 	// MentionUser is the user that is prepended to demo messages when enabled.
 	MentionUser string
 
-	// SecretNumber is an integer that, when mentioned in a message by a user, will trigger the demo user to post a message.
-	SecretNumber int
-
 	// disabled tracks whether or not the plugin has been disabled after activation. It always starts enabled.
 	disabled bool
 
@@ -152,9 +149,6 @@ func (p *Plugin) diffConfiguration(newConfiguration *configuration) {
 	}
 	if newConfiguration.MentionUser != oldConfiguration.MentionUser {
 		configurationDiff["mention_user"] = newConfiguration.MentionUser
-	}
-	if newConfiguration.SecretNumber != oldConfiguration.SecretNumber {
-		configurationDiff["secret_number"] = newConfiguration.SecretNumber
 	}
 
 	if len(configurationDiff) == 0 {

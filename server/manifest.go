@@ -60,14 +60,6 @@ const manifestStr = `
         "help_text": "The mammut id in api to talk with.",
         "placeholder": "",
         "default": 0
-      },
-      {
-        "key": "secretNumber",
-        "display_name": "Secret Number",
-        "type": "number",
-        "help_text": "A secret number that the demo plugin will watch for. If the secret number is mentioned in any channel then the demo plugin will publish a special message.",
-        "placeholder": "Some secret number",
-        "default": 123
       }
     ]
   }

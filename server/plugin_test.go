@@ -39,6 +39,7 @@ func TestServeHTTP2(t *testing.T) {
 	plugin := Plugin{}
 	api := &plugintest.API{}
     api.On("LogInfo", "SERVE HTPP FUNCTION ACTIVATED").Return("SERVE HTPP FUNCTION ACTIVATED", nil)
+    api.On("LogInfo", "HTTPMAMMUTHOOKS FUNCTION ACTIVATED").Return("HTTPMAMMUTHOOKS FUNCTION ACTIVATED", nil)
     api.On("LogInfo", "MAMMUT response on hook","mammutresponseronhook", &MammutResponse{UserID:"user_id_1_placeholder", ChannelID:"chanel_id_placeholder", Message:"message_placeholder"}).Return(nil, nil)
     api.On("LogInfo", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>").Return(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", nil)
 	api.On("CreatePost", &model.Post{

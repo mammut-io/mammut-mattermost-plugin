@@ -47,7 +47,7 @@ func (p *Plugin) serveHTTPOriginal(w http.ResponseWriter, r *http.Request) {
 //httpMammutHooks valida si el metodo es post e invoca funcion que crea el post en canal correspondiente
 func (p *Plugin) httpMammutHooks(w http.ResponseWriter, r *http.Request) {
 	p.API.LogInfo(
-		"SERVE HTPP FUNCTION ACTIVATED",
+		"HTTPMAMMUTHOOKS FUNCTION ACTIVATED",
 	)
 
 	//not available if not authenticated, we remove this simple validation
