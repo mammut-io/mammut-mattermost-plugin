@@ -34,7 +34,26 @@ The next steps in this section will walk throught the successfull training and t
 
 ## Installing the plugin
 
-[Elieser instructions here]
+In order to this plugin to work we asume you have a domain where yo serve your mattermost, we need that mattermost `serverurl` is configured on `admin_console/environment/web_server`
+
+ ![image of config for serverUrl](/imgs/plugin/install1.png)
+
+Please install the `mammut-mattermost-plugin` as any other plugin on `admin_console/plugins/plugin_management` then go to the plugin config page `admin_console/plugins/plugin_com.mattermost.mammut-mattermost-plugin`<br>
+
+Now you need to set the `Mammut Url` this refers to the instance of the mammut API you will be working with. If you have a `MammutUserId` please set it to your bot, if not leave the box empty. After that you can set enable plugin to `true` and then save your configuration.
+
+ ![image of config for MammutUrl](/imgs/plugin/install2.png)
+
+You should be ready to talk to your bot.<br>
+
+Go to your team section, and create a Direct Message chanel with the bot user `mammutplugin`.
+
+ ![image of config for MammutUrl](/imgs/plugin/install3.png)
+
+After that, simply text to your bot and enjoy.
+
+ ![image of config for MammutUrl](/imgs/plugin/install4.png)
+
 * Install the plugin in the mattermost deployment
 * Create a new bot from within the plugin.
 * Getting the Mammut Bot ID from this step. 
