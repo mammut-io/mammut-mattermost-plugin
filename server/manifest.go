@@ -12,8 +12,8 @@ var manifest *model.Manifest
 
 const manifestStr = `
 {
-  "id": "com.mattermost.plugin-starter-template",
-  "name": "Plugin Starter Template",
+  "id": "com.mattermost.mammut-mattermost-plugin",
+  "name": "mammut-mattermost-plugin",
   "description": "This plugin serves as a starting point for writing a Mattermost plugin.",
   "version": "0.1.0",
   "min_server_version": "5.12.0",
@@ -25,13 +25,43 @@ const manifestStr = `
     },
     "executable": ""
   },
-  "webapp": {
-    "bundle_path": "webapp/dist/main.js"
-  },
   "settings_schema": {
-    "header": "",
-    "footer": "",
-    "settings": []
+    "header": "Header: Configure your demo plugin settings below",
+    "footer": "Footer: The code for this demo plugin can be found [here](https://github.com/mattermost/mattermost-plugin-demo)",
+    "settings": [
+      {
+        "key": "ChannelName",
+        "display_name": "Channel Name",
+        "type": "text",
+        "help_text": "The channel to use as part of the demo plugin, created for each team automatically if it does not exist.",
+        "placeholder": "demo_plugin",
+        "default": "demo_plugin"
+      },
+      {
+        "key": "Username",
+        "display_name": "Username",
+        "type": "text",
+        "help_text": "The user to use as part of the demo plugin, created automatically if it does not exist.",
+        "placeholder": "mammut_bot",
+        "default": "mammut_bot"
+      },
+      {
+        "key": "MammutAPIURL",
+        "display_name": "MammutAPIURL",
+        "type": "text",
+        "help_text": "The mammut api to talk with.",
+        "placeholder": "https://api.mammut.io",
+        "default": "https://api.mammut.io"
+      },
+      {
+        "key": "MammutUserID",
+        "display_name": "MammutUserID",
+        "type": "number",
+        "help_text": "The mammut id in api to talk with.",
+        "placeholder": "",
+        "default": 0
+      }
+    ]
   }
 }
 `

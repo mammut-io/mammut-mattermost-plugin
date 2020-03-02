@@ -184,6 +184,7 @@ Content-Type application/json
 
 ### Test your bot using Mattermost!
 
+![image from your bot mammut mattermost bot integration](./imgs/doc5.png)
 Now that the compilation completed successfully, We can talk with the bot using the sceneries from the `corpus` sheet in the spreadsheet.
 
 ![image from your corpus](./imgs/doc10.png)
