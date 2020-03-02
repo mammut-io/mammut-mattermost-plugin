@@ -30,7 +30,7 @@ The next steps in this section will walk throught the successfull training and t
 
 4. Change the permissions to your spreadsheet and presentation documents to *anyone with the link can edit*:
 
- ![image of the right permissions](/imgs/doc7.png)
+ ![image of the right permissions](/imgs/doc9.png)
 
 ## Installing the plugin
 
