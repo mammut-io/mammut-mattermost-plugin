@@ -189,3 +189,7 @@ Content-Type application/json
     "status": "Success"
 }
 ```
+
+### Test your bot using Mattermost!
+
+![image from your bot mammut mattermost bot integration](./imgs/doc5.png)
