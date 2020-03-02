@@ -24,6 +24,20 @@ You can create your package by cloning this templates for a Kubernetes mammut bo
 
 We aim to support full automatic knowledge population of your mattermost mammut bot by obtaining it directly from your Kubernetes API cluster.
 
+For prepare your package to use your Kubernetes API from your cluster you need to follow this steps:
+
+1. Add an access token that has authorization in your cluster in your package. Add it to your presentation package
+
+![image from your kubernetes credentials](./imgs/doc1.png)
+
+2. Specify the `path` to your resources for the kubernetes API in the `endpoint` column of your vertex ontology
+
+![image from your kubernetes resource in your ontology](./imgs/doc2.png)
+
+![image from your kubernetes resource in your ontology](./imgs/doc3.png)
+
+![image from your kubernetes resource in your ontology](./imgs/doc4.png)
+
 # Integration steps
 
 ## Installing the plugin
