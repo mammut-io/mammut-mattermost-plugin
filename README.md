@@ -195,7 +195,7 @@ Content-Type application/json
 
 Now that the compilation completed successfully, We can talk with the bot using the sceneries from the `corpus` sheet in the spreadsheet.
 
-![image from your corpus](./imgs/doc10.png)
+![image from your corpus](./imgs/doc11.png)
 
 We can use any of the scenery examples in the sheet. This bot doesn't have AI activated yet, so It can only handle conversations like the ones in the sheet.
 We'll support AI for the NLP in the sooner future so the bots can handle any kind of conversation!.
@@ -208,7 +208,7 @@ Go to your team section, and create a Direct Message chanel with the bot user `m
 
 After that, simply text to your bot and enjoy.
 
- ![image of config for MammutUrl](/imgs/plugin/install4.png)
+ ![image of config for MammutUrl](/imgs/doc10.png)
 
 # Upcoming: Real connection cluster
 
